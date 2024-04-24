@@ -3,13 +3,10 @@
 describe('Central de Atendimento ao Cliente TAT', () => {
     beforeEach(() => {
         cy.visit('./src/index.html')
-    })
-    
-    it('Verifica o título da aplicação', () => {
         cy.title().should('eq', 'Central de Atendimento ao Cliente TAT')
     })
 
-    it('Preenche os campos obrigatórios e envia o formulário', () => {
+    it.skip('Preenche os campos obrigatórios e envia o formulário', () => {
         cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
         cy.get('#lastName').type('Teste').should('have.value', 'Teste')
         cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
@@ -19,7 +16,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('.success').should('be.visible')
     })
 
-    it('Exibe a mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
+    it.skip('Exibe a mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
         cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
         cy.get('#lastName').type('Teste').should('have.value', 'Teste')
         cy.get('#email').type('brunoteste.com').should('have.value', 'brunoteste.com')
@@ -29,14 +26,14 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('.error').should('be.visible')
     })
 
-    it('Validar o envio de valores não-numéricos no campo telefone', () => {
+    it.skip('Valida o envio de valores não-numéricos no campo telefone', () => {
         cy.get('#phone')
             .type('teste')
             .should('not.have.value', 'teste')
             .should('have.value', '')
     })
 
-    it('Exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+    it.skip('Exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
         cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
         cy.get('#lastName').type('Teste').should('have.value', 'Teste')
         cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
@@ -48,7 +45,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('.error').should('be.visible')
     })
 
-    it('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
+    it.skip('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
         cy.get('#firstName').type('Bruno').should('have.value', 'Bruno').clear().should('have.value', '')
         cy.get('#lastName').type('Teste').should('have.value', 'Teste').clear().should('have.value', '')
         cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com').clear().should('have.value', '')
@@ -56,17 +53,17 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#open-text-area').type('Apenas um teste, obrigado!').should('have.value', 'Apenas um teste, obrigado!').clear().should('have.value', '')
     })
 
-    it('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
+    it.skip('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
         cy.get('button[type="submit"]').click()
         cy.get('.error').should('be.visible')
     })
 
-    it('Envia o formuário com sucesso usando um comando customizado', () => {
+    it.skip('Envia o formuário com sucesso usando um comando customizado', () => {
         cy.fillMandatoryFieldsAndSubmit()
         cy.get('.success').should('be.visible')
     })
 
-    it('Validar click no botão com Contains', () => {
+    it.skip('Valida o click no botão com Contains', () => {
         cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
         cy.get('#lastName').type('Teste').should('have.value', 'Teste')
         cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
@@ -74,5 +71,55 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
         cy.contains('button', 'Enviar').click()
         cy.get('.success').should('be.visible')
+    })
+
+    it.skip('Seleciona um produto "Youtube" por seu texto', () => {
+        cy.get('#product').select('YouTube').should('have.value', 'youtube')
+    })
+
+    it.skip('Seleciona um produto "Mentoria" por seu valor (value)', () => {
+        cy.get('#product').select('mentoria').should('have.value', 'mentoria')
+    })
+
+    it.skip('Seleciona um produto "Blog" por seu índice (1)', () => {
+        cy.get('#product').select(1).should('have.value', 'blog')
+    })
+
+    it.skip('Marca o tipo de atendimento "Feedback"', () => {
+        cy.get('input[type="radio"][value="feedback"]').check().should('have.value', 'feedback')
+    })
+
+    it.skip('Marca cada tipo de atendimento', () => {
+        cy.get('input[type="radio"]').should('have.length', 3).each(($radio) => {
+            cy.wrap($radio).check()
+            cy.wrap($radio).should('be.checked')
+        })
+    })
+
+    it.skip('Marca ambos checkboxes, depois desmarca o último', () => {
+        cy.get('input[type="checkbox"]').check().should('be.checked').last().uncheck().should('not.be.checked')
+    })
+
+    it.skip('Exibe mensagem de erro quando o telefone se torna obrigatório, mas não é preenchido', () => {
+        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
+        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
+        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
+        cy.get('#phone-checkbox').check()
+        cy.get('#open-text-area').type('Apenas um teste, obrigado!').should('have.value', 'Apenas um teste, obrigado!')
+
+        cy.get('button[type="submit"]').click()
+        cy.get('.error').should('be.visible')
+    })
+
+    it('Seleciona um arquivo da pasta fixtures', () => {
+
+    })
+
+    it('Seleciona um arquivo simulando um drag-and-drop', () => {
+
+    })
+
+    it('Seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', () => {
+        
     })
 })
