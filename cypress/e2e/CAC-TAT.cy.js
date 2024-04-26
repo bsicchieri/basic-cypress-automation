@@ -2,116 +2,151 @@
 
 describe('Central de Atendimento ao Cliente TAT', () => {
     beforeEach(() => {
-        cy.visit('./src/index.html')
+        cy.visit('./src/index.html') // https://cac-tat.s3.eu-central-1.amazonaws.com/index.html
         cy.title().should('eq', 'Central de Atendimento ao Cliente TAT')
     })
 
-    it('Preenche os campos obrigatórios e envia o formulário', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!', { delay: 0 }).should('have.value', 'Apenas um teste, obrigado!')
+    it('Fill in the required fields and submit the form', () => {
+        cy.clock()
+
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com')
+        cy.get('#open-text-area').type('Just a test, thanks!', { delay: 0 }).should('have.value', 'Just a test, thanks!')
 
         cy.get('button[type="submit"]').click()
         cy.get('.success').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.success').should('not.be.visible')
     })
 
-    it('Exibe a mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('brunoteste.com').should('have.value', 'brunoteste.com')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!', { delay: 0 }).should('have.value', 'Apenas um teste, obrigado!')
+    it('Displays an error message when submitting the form with an email with invalid formatting', () => {
+        cy.clock()
+        
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('anasilva.com').should('have.value', 'anasilva.com')
+        cy.get('#open-text-area').type('Just a test, thanks!', { delay: 0 }).should('have.value', 'Just a test, thanks!')
 
         cy.get('button[type="submit"]').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.error').should('not.be.visible')
     })
 
-    it('Valida o envio de valores não-numéricos no campo telefone', () => {
+    it('Validates the sending of non-numeric values ​​in the telephone field', () => {
         cy.get('#phone')
-            .type('teste')
-            .should('not.have.value', 'teste')
+            .type('test')
+            .should('not.have.value', 'test')
             .should('have.value', '')
     })
 
-    it('Exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!').should('have.value', 'Apenas um teste, obrigado!')
+    it('Displays an error message when the telephone number becomes mandatory but is not filled in before submitting the form', () => {
+        cy.clock()
+        
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com')
+        cy.get('#open-text-area').type('Just a test, thanks!').should('have.value', 'Just a test, thanks!')
 
         cy.get('[type="checkbox"]').check('phone').should('be.checked')
 
         cy.get('button[type="submit"]').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.error').should('not.be.visible')
     })
 
-    it('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno').clear().should('have.value', '')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste').clear().should('have.value', '')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com').clear().should('have.value', '')
+    it('Fill in and clear the name, surname, email and telephone fields', () => {
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana').clear().should('have.value', '')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva').clear().should('have.value', '')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com').clear().should('have.value', '')
         cy.get('#phone').type('9999999').should('have.value', '9999999').clear().should('have.value', '')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!').should('have.value', 'Apenas um teste, obrigado!').clear().should('have.value', '')
+        cy.get('#open-text-area').type('Just a test, thanks!').should('have.value', 'Just a test, thanks!').clear().should('have.value', '')
     })
 
-    it('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
+    it('Displays an error message when submitting the form without filling in the required fields', () => {
+        cy.clock()
+        
         cy.get('button[type="submit"]').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.error').should('not.be.visible')
     })
 
-    it('Envia o formuário com sucesso usando um comando customizado', () => {
+    it('Submits the form successfully using a custom command', () => {
+        cy.clock()
+        
         cy.fillMandatoryFieldsAndSubmit()
         cy.get('.success').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.success').should('not.be.visible')
     })
 
-    it('Valida o click no botão com Contains', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!', { delay: 0 }).should('have.value', 'Apenas um teste, obrigado!')
+    it('Validates the click on the button with Contains', () => {
+        cy.clock()
+
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com')
+        cy.get('#open-text-area').type('Just a test, thanks!', { delay: 0 }).should('have.value', 'Just a test, thanks!')
 
         cy.contains('button', 'Enviar').click()
         cy.get('.success').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.success').should('not.be.visible')
     })
 
-    it('Seleciona um produto "Youtube" por seu texto', () => {
+    it('Select a "Youtube" product by its text', () => {
         cy.get('#product').select('YouTube').should('have.value', 'youtube')
     })
 
-    it('Seleciona um produto "Mentoria" por seu valor (value)', () => {
+    it('Select a "Mentoring" product by its value (value)', () => {
         cy.get('#product').select('mentoria').should('have.value', 'mentoria')
     })
 
-    it('Seleciona um produto "Blog" por seu índice (1)', () => {
+    it('Select a "Blog" product by its index (1)', () => {
         cy.get('#product').select(1).should('have.value', 'blog')
     })
 
-    it('Marca o tipo de atendimento "Feedback"', () => {
+    it('Select the type of service "Feedback"', () => {
         cy.get('input[type="radio"][value="feedback"]').check().should('have.value', 'feedback')
     })
 
-    it('Marca cada tipo de atendimento', () => {
+    it('Mark each type of service', () => {
         cy.get('input[type="radio"]').should('have.length', 3).each(($radio) => {
             cy.wrap($radio).check()
             cy.wrap($radio).should('be.checked')
         })
     })
 
-    it('Marca ambos checkboxes, depois desmarca o último', () => {
+    it('Check both boxes, then uncheck the last one', () => {
         cy.get('input[type="checkbox"]').check().should('be.checked').last().uncheck().should('not.be.checked')
     })
 
-    it('Exibe mensagem de erro quando o telefone se torna obrigatório, mas não é preenchido', () => {
-        cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
+    it('Displays error message when phone number becomes mandatory but is not filled in', () => {
+        cy.clock()
+        
+        cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com')
         cy.get('#phone-checkbox').check()
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!').should('have.value', 'Apenas um teste, obrigado!')
+        cy.get('#open-text-area').type('Just a test, thanks!').should('have.value', 'Just a test, thanks!')
 
         cy.get('button[type="submit"]').click()
         cy.get('.error').should('be.visible')
+
+        cy.tick(3000)
+        cy.get('.error').should('not.be.visible')
     })
 
-    it('Seleciona um arquivo da pasta fixtures', () => {
+    it('Select a file from the fixtures folder', () => {
         cy.get('input[type="file"]')
             .should('not.have.value')
             .selectFile('cypress/fixtures/example.json')
@@ -120,7 +155,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             })
     })
 
-    it('Seleciona um arquivo simulando um drag-and-drop', () => {
+    it('Select a file by simulating drag-and-drop', () => {
         cy.get('input[type="file"]')
             .selectFile('cypress/fixtures/example.json', { action: 'drag-drop' })
             .then(input => {
@@ -128,7 +163,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             })
     })
 
-    it('Seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', () => {
+    it('Selects a file using a fixture that has been given an alias', () => {
         cy.fixture('example.json', { encoding: null }).as('exampleFile')
         cy.get('input[type="file"]')
             .selectFile('@exampleFile')
@@ -137,17 +172,52 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             })
     })
 
-    it('Verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', () => {
+    it('Check that the privacy policy opens in another tab without the need for a click', () => {
         cy.get('#privacy a').should('have.attr', 'target', '_blank')
     })   
     
-    it('Acessa a página de política de privacidade removendo o target e então clicando no link', () => {
+    it('Access the privacy policy page by removing the target and then clicking on the link', () => {
         cy.get('#privacy a').invoke('removeAttr', 'target').click()
         cy.contains('Talking About Testing').should('be.visible')
     })
 
-    it('', () => {
-        
+    it('Display and hide success and error messages using .invoke()', () => {
+        cy.get('.success')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Mensagem enviada com sucesso.')
+            .invoke('hide')
+            .should('not.be.visible')
+        cy.get('.error')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Valide os campos obrigatórios!')
+            .invoke('hide')
+            .should('not.be.visible')
+    })
+
+    it('Fill the text area using the invoke command', () => {
+        const longText = Cypress._.repeat('Test ', 20)
+        cy.get('#open-text-area').invoke('val', longText).should('have.value', longText)
+    })
+
+    it('Make an HTTP request', () => {
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+            .should((response) => {
+                const { status, statusText, body } = response
+                expect(status).to.equal(200)
+                expect(statusText).to.equal('OK')
+                expect(body).to.include('CAC TAT')
+            })
+    })
+
+    it('Challenge', () => {
+        cy.get('#cat')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
     })
 
 })

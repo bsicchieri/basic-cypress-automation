@@ -1,7 +1,7 @@
 Cypress.Commands.add('fillMandatoryFieldsAndSubmit', () => {
-    cy.get('#firstName').type('Bruno').should('have.value', 'Bruno')
-        cy.get('#lastName').type('Teste').should('have.value', 'Teste')
-        cy.get('#email').type('bruno@teste.com').should('have.value', 'bruno@teste.com')
-        cy.get('#open-text-area').type('Apenas um teste, obrigado!', { delay: 0 }).should('have.value', 'Apenas um teste, obrigado!')
+    cy.get('#firstName').type('Ana').should('have.value', 'Ana')
+        cy.get('#lastName').type('Silva').should('have.value', 'Silva')
+        cy.get('#email').type('ana@test.com').should('have.value', 'ana@test.com')
+        cy.get('#open-text-area').type('Just a test, thanks!', { delay: 0 }).should('have.value', 'Just a test, thanks!')
         cy.get('button[type="submit"]').click()
 })
